@@ -2,6 +2,8 @@ import os
 import sys
 import warnings
 
+from shlex import shlex
+
 def read_dotenv(dotenv=None):
     """
     Read a .env file into os.environ.
@@ -19,10 +21,8 @@ def read_dotenv(dotenv=None):
         os.environ.setdefault(k, v)
 
 def parse_dotenv(dotenv):
-    for line in open(dotenv):
-        line = line.strip()
-        if not line or line.startswith('#') or '=' not in line:
+    for lexer in map(shlex, open(dotenv)):
+        key = lexer.get_token()
+        if key is None or "=" != lexer.get_token():
             continue
-        k, v = line.split('=', 1)
-        v = v.strip("'").strip('"')
-        yield k, v
+        yield key, " ".join(lexer).strip().strip("\'\"")
