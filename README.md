@@ -11,7 +11,7 @@ pip install django-dotenv
 
 ## Usage
 
-Pop open `manage.py`. Add:
+Pop open `manage.py` and `wsgi.py`. Add:
 
 ```
 import dotenv
