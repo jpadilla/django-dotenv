@@ -25,4 +25,5 @@ def parse_dotenv(dotenv):
             continue
         k, v = line.split('=', 1)
         v = v.strip("'").strip('"')
+        v = os.path.expandvars(v)
         yield k, v
