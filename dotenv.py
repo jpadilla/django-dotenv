@@ -34,7 +34,7 @@ variable_re = re.compile(r"""
 """, re.IGNORECASE | re.VERBOSE)
 
 
-def read_dotenv(dotenv=None):
+def read_dotenv(dotenv=None, silent=False):
     """
     Read a .env file into os.environ.
 
@@ -44,6 +44,9 @@ def read_dotenv(dotenv=None):
     if dotenv is None:
         frame_filename = sys._getframe().f_back.f_code.co_filename
         dotenv = os.path.join(os.path.dirname(frame_filename), '.env')
+
+    if silent:
+        warnings.simplefilter('ignore')
 
     if os.path.isdir(dotenv) and os.path.isfile(os.path.join(dotenv, '.env')):
         dotenv = os.path.join(dotenv, '.env')
