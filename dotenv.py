@@ -34,7 +34,7 @@ variable_re = re.compile(r"""
 """, re.IGNORECASE | re.VERBOSE)
 
 
-def read_dotenv(dotenv=None, silent=False):
+def read_dotenv(dotenv=None, *, silent=False):
     """
     Read a .env file into os.environ.
 
