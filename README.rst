@@ -70,6 +70,23 @@ your ``wsgi.py`` would look like this:
 
 That's it. Now go 12 factor the crap out of something.
 
+Common problems
+---------------
+
+``AttributeError: module 'dotenv' has no attribute 'read_dotenv'``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is another similar package,
+`python-dotenv <https://github.com/theskumar/python-dotenv>`__, which also
+contains a module called ``dotenv``.  If that package is installed, then you
+will see:
+
+::
+
+    AttributeError: module 'dotenv' has no attribute 'read_dotenv'
+
+To resolve this, uninstall python-dotenv.
+
 .. |build-status-image| image:: https://travis-ci.org/jpadilla/django-dotenv.svg
    :target: https://travis-ci.org/jpadilla/django-dotenv
 .. |pypi-version| image:: https://img.shields.io/pypi/v/django-dotenv.svg
