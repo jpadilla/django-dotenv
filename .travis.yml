@@ -1,5 +1,9 @@
+# This is required to get Travis to run Python 3.7
+# https://github.com/travis-ci/travis-ci/issues/9069#issuecomment-425720905
+sudo: required
+dist: xenial
+
 language: python
-sudo: false
 
 install:
 - pip install tox
