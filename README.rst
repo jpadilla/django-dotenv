@@ -45,6 +45,10 @@ You can also pass ``read_dotenv()`` an explicit path to the ``.env``
 file, or to the directory where it lives. It's smart, it'll figure it
 out.
 
+By default, variables that are already defined in the environment take
+precedence over those in your ``.env`` file.  To change this, call
+``read_dotenv(override=True)``.
+
 Check out
 `tests.py <https://github.com/jpadilla/django-dotenv/blob/master/tests.py>`__
 to see all the supported formats that your ``.env`` can have.
@@ -86,6 +90,13 @@ will see:
     AttributeError: module 'dotenv' has no attribute 'read_dotenv'
 
 To resolve this, uninstall python-dotenv.
+
+``read_dotenv`` is not reading from my environment file!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, variables that are already defined in the environment take
+precedence over those in your ``.env`` file.  To change this, call
+``read_dotenv(override=True)``.
 
 .. |build-status-image| image:: https://travis-ci.org/jpadilla/django-dotenv.svg
    :target: https://travis-ci.org/jpadilla/django-dotenv
