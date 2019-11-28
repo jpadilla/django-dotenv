@@ -3,8 +3,12 @@ import shutil
 import unittest
 import warnings
 
-from dotenv import parse_dotenv, read_dotenv
-
+from dotenv import (
+    parse_dotenv,
+    read_dotenv,
+    _read_dotenv_example,
+    _check_safe
+)
 
 class ParseDotenvTestCase(unittest.TestCase):
     def test_parses_unquoted_values(self):
@@ -113,6 +117,7 @@ class ParseDotenvTestCase(unittest.TestCase):
 
 
 class ReadDotenvTestCase(unittest.TestCase):
+
     def test_defaults_to_dotenv(self):
         read_dotenv()
         self.assertEqual(os.environ.get('DOTENV'), 'true')
@@ -130,6 +135,18 @@ class ReadDotenvTestCase(unittest.TestCase):
             self.assertEqual(
                 str(w[0].message),
                 "Not reading .does_not_exist - it doesn't exist."
+            )
+
+    def test_warns_if_values_not_exist(self):
+        with warnings.catch_warnings(record=True) as w:
+            read_dotenv('.env', safe=True)
+
+            self.assertEqual(len(w), 1)
+            self.assertTrue(w[0].category is UserWarning)
+            self.assertEqual(
+                str(w[0].message),
+                "The following variables were defined in .env.example but "
+                "are not present in the environment:\n DOTENV_EXAMPLE"
             )
 
 
@@ -152,3 +169,56 @@ class ParseDotenvDirectoryTestCase(unittest.TestCase):
     def test_can_read_dotenv_given_its_directory(self):
         read_dotenv(self.dotenv_dir)
         self.assertEqual(os.environ.get('DOTENV'), 'true')
+
+
+class ReadDotenvExampleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        # Define our dotenv directory
+        self.dotenv_dir = os.path.join(
+            os.path.dirname(__file__), 'dotenv_dir')
+        self.dir_not_found = os.path.join(self.dotenv_dir, 'dir_not_found')
+        # Create the directories
+        os.mkdir(self.dotenv_dir)
+        os.mkdir(self.dir_not_found)
+        # Copy the test .env file and .env.example file to our new directory
+        for file in ('.env', '.env.example'):
+            shutil.copy2(os.path.abspath(file), self.dotenv_dir)
+
+    def tearDown(self):
+        for dir_name in (self.dotenv_dir, self.dir_not_found):
+            if os.path.exists(dir_name):
+                shutil.rmtree(dir_name)
+
+    def test_read_example(self):
+        dotenv_example = _read_dotenv_example(self.dotenv_dir)
+        expected = {'DOTENV': 'true', 'DOTENV_EXAMPLE': 'true'}
+        self.assertDictEqual(dotenv_example, expected)
+
+    def test_file_not_exists(self):
+        dotenv_example = _read_dotenv_example(self.dir_not_found)
+        self.assertDictEqual(dotenv_example, {})
+
+
+class CheckSafeTestCase(unittest.TestCase):
+
+    def setUp(self):
+        # Define our dotenv directory
+        self.dotenv_dir = os.path.join(
+            os.path.dirname(__file__), 'dotenv_dir')
+        # Create the directory
+        os.mkdir(self.dotenv_dir)
+        # Copy the test .env file to our new directory
+        for file in ('.env', '.env.example'):
+            shutil.copy2(os.path.abspath(file), self.dotenv_dir)
+
+    def tearDown(self):
+        if os.path.exists(self.dotenv_dir):
+            shutil.rmtree(self.dotenv_dir)
+
+    def test_return(self):
+        dotenv_example = _read_dotenv_example(self.dotenv_dir)
+        keys_not_exist = _check_safe(dotenv_example)
+
+        expected = ['DOTENV_EXAMPLE']
+        self.assertEqual(keys_not_exist, expected)
