@@ -217,6 +217,7 @@ class CheckSafeTestCase(unittest.TestCase):
             shutil.rmtree(self.dotenv_dir)
 
     def test_return(self):
+        read_dotenv(self.dotenv_dir)
         dotenv_example = _read_dotenv_example(self.dotenv_dir)
         keys_not_exist = _check_safe(dotenv_example)
 
