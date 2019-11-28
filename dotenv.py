@@ -34,7 +34,7 @@ variable_re = re.compile(r"""
 """, re.IGNORECASE | re.VERBOSE)
 
 
-def read_dotenv(dotenv=None, override=False):
+def read_dotenv(dotenv=None, override=False, safe=False):
     """
     Read a .env file into os.environ.
 
@@ -45,6 +45,8 @@ def read_dotenv(dotenv=None, override=False):
     way to ensure tests run consistently across all environments.
 
     :param override: True if values in .env should override system variables.
+    :param safe: If True, check values in .env.example exist in system
+                 variables.
     """
     if dotenv is None:
         frame_filename = sys._getframe().f_back.f_code.co_filename
@@ -63,6 +65,29 @@ def read_dotenv(dotenv=None, override=False):
     else:
         warnings.warn("Not reading {0} - it doesn't exist.".format(dotenv),
                       stacklevel=2)
+
+    if safe:
+        dotenv_example = _read_dotenv_example(os.path.dirname(dotenv))
+        keys_not_exist = _check_safe(dotenv_example)
+        warnings.warn("The following variables were defined in .env.example "
+                      "but are not present in the environment:\n {}".format(
+                          ', '.join(keys_not_exist)), stacklevel=2)
+
+
+def _read_dotenv_example(dir_name):
+    dotenv_example = os.path.join(dir_name, '.env.example')
+    if os.path.isfile(dotenv_example):
+        with open(dotenv_example) as f:
+            return parse_dotenv(f.read())
+    return {}
+
+
+def _check_safe(dotenv_example):
+    keys_not_exist = []
+    for k in dotenv_example.keys():
+        if k not in os.environ:
+            keys_not_exist.append(k)
+    return keys_not_exist
 
 
 def parse_dotenv(content):
