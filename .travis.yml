@@ -1,8 +1,3 @@
-# This is required to get Travis to run Python 3.7
-# https://github.com/travis-ci/travis-ci/issues/9069#issuecomment-425720905
-sudo: required
-dist: xenial
-
 language: python
 
 install:
@@ -10,17 +5,15 @@ install:
 
 matrix:
   include:
-    - python: 2.7
-      env: TOXENV=py27
-    - python: 3.4
-      env: TOXENV=py34
     - python: 3.5
       env: TOXENV=py35
     - python: 3.6
       env: TOXENV=py36
     - python: 3.7
       env: TOXENV=py37
-    - python: 3.7
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.8
       env: TOXENV=flake8
 
 script:
