@@ -34,7 +34,7 @@ variable_re = re.compile(r"""
 """, re.IGNORECASE | re.VERBOSE)
 
 
-def read_dotenv(dotenv=None, override=False):
+def read_dotenv(dotenv=None, override=False, silent=False):
     """
     Read a .env file into os.environ.
 
@@ -60,7 +60,7 @@ def read_dotenv(dotenv=None, override=False):
                     os.environ[k] = v
                 else:
                     os.environ.setdefault(k, v)
-    else:
+    elif not silent:
         warnings.warn("Not reading {0} - it doesn't exist.".format(dotenv),
                       stacklevel=2)
 
