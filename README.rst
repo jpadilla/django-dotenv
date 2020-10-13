@@ -9,7 +9,7 @@ django-dotenv
 Original implementation was written by
 `@jacobian <https://github.com/jacobian>`__.
 
-Tested on Python 3.5, 3.6, 3.7 and 3.8.
+Tested on Python 3.5, 3.6, 3.7, 3.8 and 3.9.
 
 Installation
 ------------
