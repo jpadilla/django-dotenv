@@ -152,3 +152,11 @@ class ParseDotenvDirectoryTestCase(unittest.TestCase):
     def test_can_read_dotenv_given_its_directory(self):
         read_dotenv(self.dotenv_dir)
         self.assertEqual(os.environ.get('DOTENV'), 'true')
+
+    def test_does_not_expand_lowercase_variables(self):
+        env = parse_dotenv('PASSWORD="foo$bar"')
+        self.assertEqual(env, {'PASSWORD': 'foo$bar'})
+
+    def test_expands_uppercase_variables_in_password_like_values(self):
+        env = parse_dotenv("FOO=test\nPASSWORD=\"foo$FOO\"")
+        self.assertEqual(env, {'FOO': 'test', 'PASSWORD': 'footest'})
