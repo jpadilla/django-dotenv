@@ -31,7 +31,7 @@ variable_re = re.compile(r"""
         ([A-Z0-9_]+)    #   match the variable
         \}?             #   closing brace
     )                   # braces end
-""", re.IGNORECASE | re.VERBOSE)
+""", re.VERBOSE)
 
 
 def read_dotenv(dotenv=None, override=False):
